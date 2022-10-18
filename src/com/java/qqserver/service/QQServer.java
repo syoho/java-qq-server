@@ -31,6 +31,7 @@ public class QQServer {
             //while
             //和某个客户端连接后，还需要继续监听
             while (true) {
+                //如果没有客户端连接，就会阻塞
                 Socket socket = serverSocket.accept(); //此处得到服务器端的socket
 
                 //得到socket关联的对象输入流
@@ -56,16 +57,18 @@ public class QQServer {
                     //启动线程
                     serverConnectClientThread.start();
                     //将该线程放入一个集合中，用于管理
+                    ManageServerConnectClientThread.addServerConnectClientThread(user.getUserId(), serverConnectClientThread);
 
 
 
                 } else {
                     //登录失败
+                    message.setMesType(MessageType.MESSAGE_LOGIN_FAIL);
+                    objectOutputStream.writeObject(message);
+                    //关闭socket
+                    socket.close();
 
                 }
-
-
-
 
             }
 
@@ -73,7 +76,15 @@ public class QQServer {
 
         } catch (Exception e) {
             e.printStackTrace();
+
         } finally {
+
+            //如果服务器退出了while，则说明服务器不再监听，因此关闭ServerSocket
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
 
