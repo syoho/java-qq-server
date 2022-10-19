@@ -1,4 +1,4 @@
-package com.java.common;
+package com.java.qqcommon;
 
 //接口
 //消息类型

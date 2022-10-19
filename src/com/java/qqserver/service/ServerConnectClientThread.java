@@ -1,7 +1,7 @@
 package com.java.qqserver.service;
 
 
-import com.java.common.Message;
+import com.java.qqcommon.Message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -32,7 +32,7 @@ public class ServerConnectClientThread extends Thread {
 
         while (true) {
             try {
-                System.out.println("服务器和客户端保持通信，读取数据");
+                System.out.println("服务器和客户端用户ID："+ userId +"保持通信，读取数据中……" );
                 //读数据
                 ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
                 Message message = (Message) objectInputStream.readObject(); //为什么是读Message？；后面使用Message
