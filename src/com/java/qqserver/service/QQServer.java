@@ -35,6 +35,7 @@ public class QQServer {
     //初始化
     static {
         vaildUsers.put("100", new User("100", "12345"));
+        vaildUsers.put("200", new User("200", "12345"));
         vaildUsers.put("Oreki", new User("Oreki", "12345"));
         vaildUsers.put("Chitanda", new User("Chitanda", "12345"));
     }

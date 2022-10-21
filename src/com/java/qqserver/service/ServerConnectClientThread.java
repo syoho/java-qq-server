@@ -2,9 +2,11 @@ package com.java.qqserver.service;
 
 
 import com.java.qqcommon.Message;
+import com.java.qqcommon.MessageType;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 //该类对应的线程和某个客户端保持通讯
@@ -36,6 +38,35 @@ public class ServerConnectClientThread extends Thread {
                 //读数据
                 ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
                 Message message = (Message) objectInputStream.readObject(); //为什么是读Message？；后面使用Message
+
+                //socket.getInputStream() - ObjectInputStream - .readObject() -Message
+                //根据Message类型，做相应的业务处理
+                if (message.getMesType().equals(MessageType.MESSAGE_GET_ONLINE_FRIEND)) {
+
+                    //客户端请求在线列表
+                    //便于debug
+                    //在线用户列表形式：
+                    System.out.println(message.getSender() + "要求在线用户列表");
+
+                    //管理线程的集合知道有多少线程
+                    //去ManageServerConnectClientThread.java编写方法-可以返回在线用户列表
+                    String onlineUserList = ManageServerConnectClientThread.getOnlineUserList();
+
+                    //需要返回
+                    //返回Message
+                    Message message_return = new Message();
+                    message_return.setMesType(MessageType.MESSAGE_RET_ONLINE_FRIEND);
+                    message_return.setContent(onlineUserList);
+                    message_return.setGetter(message.getSender());
+
+                    //返回客户端
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                    objectOutputStream.writeObject(message_return);
+
+                } else {
+                    System.out.println("其他类型暂不做处理……");
+                }
+
 
             } catch (Exception e) {
                 e.printStackTrace();
