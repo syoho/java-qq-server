@@ -39,5 +39,10 @@ public class ManageServerConnectClientThread {
         return onLineUserList;
     }
 
+    //编写方法，从集合中移除线程
+    public static void removeServerConnectClientThread(String userId) {
+        hm.remove(userId);
+    }
+
 
 }
