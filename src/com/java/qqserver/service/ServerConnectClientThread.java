@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Iterator;
 
 //该类对应的线程和某个客户端保持通讯
 //必须有Socket
@@ -38,7 +40,8 @@ public class ServerConnectClientThread extends Thread {
 
         while (true) {
             try {
-                System.out.println("服务器和客户端用户ID："+ userId +"保持通信，读取数据中……" );
+
+                //从数据通道得到ObjectInputStream - 转换为Message对象               System.out.println("服务器和客户端用户ID："+ userId +"保持通信，读取数据中……" );
                 //读数据
                 ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
                 Message message = (Message) objectInputStream.readObject(); //为什么是读Message？；后面使用Message
@@ -75,6 +78,33 @@ public class ServerConnectClientThread extends Thread {
                     //得到对应socket的对象输出流
                     ObjectOutputStream objectOutputStream = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
                     objectOutputStream.writeObject(message); //转发，提示如果客户不在线，可以保存到数据库，实现离线留言
+
+
+                } else if (message.getMesType().equals(MessageType.MESSAGE_TO_ALL_MES)) {
+
+                    //需要遍历ManageServerConnectClientThread集合
+                    //把所有线程的Socket得到
+                    //把Message转发
+                    //要遍历 - 得到HashMap - HashMap为私有 - 去ManageServerConnectClientThread写方法 - get
+                    //重看【集合】
+                    HashMap<String, ServerConnectClientThread> hm = ManageServerConnectClientThread.getHm(); //这样就有所有的线程啦？难以置信
+
+                    Iterator<String> iterator = hm.keySet().iterator();
+                    while (iterator.hasNext()) {
+
+                        //取出在线用户的id
+                        String onLineUserId = iterator.next().toString(); //取出集合中的key
+
+                        //如果服务器线程对应的userId不是客户端发送者的id，则群发消息
+                        //有点意思，韩顺平厉害！
+                        if (!onLineUserId.equals(message.getSender())) {
+
+                            //进行转发
+                            ObjectOutputStream objectOutputStream = new ObjectOutputStream(hm.get(onLineUserId).getSocket().getOutputStream());
+                            objectOutputStream.writeObject(message);
+
+                        }
+                    }
 
 
                 } else if (message.getMesType().equals(MessageType.MESSAGE_CLIENT_EXIT)) {

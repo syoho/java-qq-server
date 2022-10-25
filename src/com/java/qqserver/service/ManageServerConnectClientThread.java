@@ -10,6 +10,11 @@ public class ManageServerConnectClientThread {
     //创建一个HashMap
     private static HashMap<String, ServerConnectClientThread> hm = new HashMap<>();
 
+    //返回HashMap - 为ServerConnectClientThread中使用
+    public static HashMap<String, ServerConnectClientThread> getHm() {
+        return hm;
+    }
+
     //一定需要一个添加线程的方法
     public static void addServerConnectClientThread(String userId, ServerConnectClientThread serverConnectClientThread) {
         //放入用put() - HashMap的方法
