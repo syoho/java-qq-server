@@ -7,6 +7,7 @@ import com.java.qqcommon.MessageType;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -106,6 +107,16 @@ public class ServerConnectClientThread extends Thread {
                         }
                     }
 
+
+                } else if (message.getMesType().equals(MessageType.MESSAGE_FILE_MES)) {
+
+                    //根据getterId，获得相应的线程
+                    //将message对象转发
+                    ServerConnectClientThread serverConnectClientThread = ManageServerConnectClientThread.getServerConnectClientThread(message.getGetter());
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
+
+                    //转发
+                    objectOutputStream.writeObject(message);
 
                 } else if (message.getMesType().equals(MessageType.MESSAGE_CLIENT_EXIT)) {
 
