@@ -13,6 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,6 +31,9 @@ public class QQServer {
     //可以处理并发的集合ConcurrentHashMap，线程同步处理
     //HashMap没有线程安全
     private static ConcurrentHashMap<String, User> vaildUsers = new ConcurrentHashMap<>();
+
+    //存放离线消息
+    private static ConcurrentHashMap<String, ArrayList<Message>> offLineDb = new ConcurrentHashMap<>();
 
     //静态代码块
     //初始化
